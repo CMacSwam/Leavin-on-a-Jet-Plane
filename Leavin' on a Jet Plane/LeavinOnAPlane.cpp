@@ -1,78 +1,86 @@
 #include <iostream>
 #include <string>
-#include <cstdlib>
-#include <stdlib.h>
 
 using namespace std;
 
-int const ROWS = 13;
+const int ROWS = 8;
+const int COLS = 13;
+const char ERROR = -1;
 
 int findRowIndex(int thisRow);
 int findSeatIndex(char thisSeat);
-void displaySeatColumn(char seats[][ROWS], int column);
+void displaySeatColumn(char seats[][COLS], int column);
+void displaySeatingChart(char seats[][COLS]);
 
-int main()
-{
-	char airplaneSeats[8][13] = { { 'D','D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D'},
-								  { 'C','C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'},
-							      { ' ',' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-								  { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '1', '1', '1', '1'},
-								  { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3'},
-								  { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-								  { 'B','B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-								  { 'A','A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'}};
-	while (true) {
-		for (int r = 0; r < 8; r++) {
-			for (int c = 0; c < 13; c++) {
-				cout << airplaneSeats[r][c] << " ";
-				if (c == 12) cout << endl;
-			}
-		}
+int main() {
+    char airplaneSeats[ROWS][COLS] = {
+        {'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D'},
+        {'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'},
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '1', '1', '1', '1'},
+        {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3'},
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+        {'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+        {'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'}
+    };
 
-		string seatInput;
-		cout << "Enter a seat or Q to quit: ";
-		cin >> seatInput;
+    displaySeatingChart(airplaneSeats);
 
-		char row;
-		int column;
-		for (int i = 0; i < seatInput.length(); i++) {
-			if (i == 1) row = seatInput[i];
-			if (i == 0) column = seatInput[i] - '0';
-		}
+    while (true) {
+        string seatInput;
+        cout << "Enter a seat or Q to quit: ";
+        cin >> seatInput;
+        if (seatInput == "Q") break;
 
-		int seatRow = findRowIndex(column);
-		int seatNumber = findSeatIndex(row);
-		airplaneSeats[seatNumber][seatRow] = 'X';
-	}
+        int row = findRowIndex(stoi(seatInput.substr(0, seatInput.size() - 1)));
+        int col = findSeatIndex(seatInput.back());
 
+        if (row == ERROR || col == ERROR) {
+            cout << "Sorry, no such seat exists on the CRJ 200." << endl;
+        }
+        else if (airplaneSeats[col][row] == 'X') {
+            cout << "Sorry, that seat is already reserved." << endl;
+        }
+        else {
+            airplaneSeats[col][row] = 'X';
+        }
+    }
+    displaySeatingChart(airplaneSeats);
 
+    return 0;
 }
 
 int findRowIndex(int thisRow) {
-	if (thisRow >= 0 || thisRow <= 13) {
-		return thisRow - 1;
-	}
-	else {
-		cout << "Error, invalid row input" << endl;
-	}
+    if (thisRow >= 1 && thisRow <= 13) {
+        return thisRow - 1;
+    }
+    return ERROR;
 }
 
 int findSeatIndex(char thisSeat) {
-	switch (thisSeat) {
-	case 'A': return 7;
-	case 'B': return 6;
-	case 'C': return 1;
-	case 'D': return 0;
-	}
-	cout << "Error, invalid seat index" << endl;
+    switch (thisSeat) {
+    case 'A': return 7;
+    case 'B': return 6;
+    case 'C': return 1;
+    case 'D': return 0;
+    default: return ERROR;
+    }
 }
 
-void displaySeatColumn(char seats[][ROWS], int column) {
-		int r = ROWS;
-		for (int c = 0; c < column; c++) {
-			cout << seats[r][c] << " ";
-			if (seats[r][c] == column-1) {
-				break;
-			}
-		}
+void displaySeatColumn(char seats[][COLS], int column) {
+    for (int r = 0; r < ROWS; ++r) {
+        if (column < COLS && seats[r][column] != ' ') {
+            cout << seats[r][column] << " ";
+        }
+    }
+    cout << endl;
+}
+
+void displaySeatingChart(char seats[][COLS]) {
+    for (int r = 0; r < ROWS; ++r) {
+        for (int c = 0; c < COLS; ++c) {
+            cout << seats[r][c] << " ";
+        }
+        cout << endl;
+    }
 }
