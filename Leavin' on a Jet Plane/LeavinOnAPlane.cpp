@@ -14,8 +14,8 @@ void displaySeatingChart(char seats[][COLS]);
 
 int main() {
     char airplaneSeats[ROWS][COLS] = {
-        {'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D'},
-        {'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'},
+        {'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', ' '},
+        {'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', ' '},
         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
         {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '1', '1', '1', '1'},
         {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3'},
@@ -35,7 +35,7 @@ int main() {
         int row = findRowIndex(stoi(seatInput.substr(0, seatInput.size() - 1)));
         int col = findSeatIndex(seatInput.back());
 
-        if (row == ERROR || col == ERROR) {
+        if (row == ERROR || col == ERROR || (row == 12 && (col == 2 || col == 3))) {
             cout << "Sorry, no such seat exists on the CRJ 200." << endl;
         }
         else if (airplaneSeats[col][row] == 'X') {
@@ -43,9 +43,9 @@ int main() {
         }
         else {
             airplaneSeats[col][row] = 'X';
+            displaySeatingChart(airplaneSeats);
         }
     }
-    displaySeatingChart(airplaneSeats);
 
     return 0;
 }
@@ -67,7 +67,7 @@ int findSeatIndex(char thisSeat) {
     }
 }
 
-void displaySeatColumn(char seats[][COLS], int column) {
+void displaySeatColumn(char seats[][ROWS], int column) {
     for (int r = 0; r < ROWS; ++r) {
         if (column < COLS && seats[r][column] != ' ') {
             cout << seats[r][column] << " ";
